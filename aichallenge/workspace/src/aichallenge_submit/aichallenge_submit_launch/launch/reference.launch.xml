@@ -279,7 +279,9 @@
     <include file="$(find-pkg-share ad_api_adaptors)/launch/rviz_adaptors.launch.xml" />
   </group>
 
+    <!-- costmap_gengerator -->
     <arg name="vehicle_param_file" default="$(find-pkg-share racing_kart_description)/config/vehicle_info.param.yaml"/>
+
     <include file="$(find-pkg-share costmap_generator)/launch/costmap_generator.launch.xml">
         <arg name="input_objects" value="/perception/object_recognition/objects_filtered"/>
         <arg name="input_points_no_ground" value="/perception/obstacle_segmentation/pointcloud"/>
@@ -289,6 +291,7 @@
         <arg name="output_occupancy_grid" value="costmap_generator/occupancy_grid"/>
         <arg name="vehicle_param_file" value="$(var vehicle_param_file)"/>
     </include>
+    <!-- costmap_gengerator End -->
 
     <!-- object_info_publisher-->
     <node pkg="object_info_publisher" exec="object_info_publisher_node" name="object_info_publisher_node" output="screen">
@@ -296,6 +299,23 @@
       <remap from="/perception/object_recognition/objects_filtered" to="/perception/object_recognition/objects_filtered"/>
     </node>
     <!-- object_info_publisher End-->
+
+    <!-- freespace_planner -->
+
+      <arg name="vehicle_param_file" default="$(find-pkg-share racing_kart_description)/config/vehicle_info.param.yaml"/>
+
+      <include file="$(find-pkg-share freespace_planner)/launch/freespace_planner.launch.xml">
+        <arg name="input_route" value="/planning/mission_planning/route"/> 
+        <arg name="input_occupancy_grid" value="costmap_generator/occupancy_grid"/>
+        <arg name="input_scenario" value="/planning/scenario_planning/scenario"/>
+        <arg name="input_odometry" value="/localization/kinematic_state"/>
+        <arg name="output_trajectory" value="/planning/scenario_planning/freespace_planner/trajectory"/>
+        <arg name="is_completed" value="/planning/scenario_planning/parking/is_completed"/>
+        <arg name="param_file" value="$(find-pkg-share freespace_planner)/config/freespace_planner.param.yaml"/>
+        <arg name="vehicle_param_file" value="$(var vehicle_param_file)"/>
+      </include>
+
+    <!-- freespace_planner  End -->
 
 
 </launch>

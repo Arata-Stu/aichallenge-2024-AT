@@ -58,19 +58,19 @@ using geometry_msgs::msg::Twist;
 using nav_msgs::msg::Odometry;
 using tier4_planning_msgs::msg::Scenario;
 
-bool isActive(const Scenario::ConstSharedPtr & scenario)
-{
-  if (!scenario) {
-    return false;
-  }
+// bool isActive(const Scenario::ConstSharedPtr & scenario)
+// {
+//   if (!scenario) {
+//     return false;
+//   }
 
-  const auto & s = scenario->activating_scenarios;
-  if (std::find(std::begin(s), std::end(s), Scenario::PARKING) != std::end(s)) {
-    return true;
-  }
+//   const auto & s = scenario->activating_scenarios;
+//   if (std::find(std::begin(s), std::end(s), Scenario::PARKING) != std::end(s)) {
+//     return true;
+//   }
 
-  return false;
-}
+//   return false;
+// }
 
 PoseArray trajectory2PoseArray(const Trajectory & trajectory)
 {
@@ -415,13 +415,14 @@ void FreespacePlannerNode::onTimer()
 {
   // Check all inputs are ready
   if (!occupancy_grid_ || !route_ || !scenario_ || !odom_) {
+    RCLCPP_INFO(get_logger(), "Topic not ready");
     return;
   }
 
-  if (!isActive(scenario_)) {
-    reset();
-    return;
-  }
+  // if (!isActive(scenario_)) {
+  //   reset();
+  //   return;
+  // }
 
   if (is_completed_) {
     return;
